@@ -134,6 +134,32 @@ var recalcListAndTotal = debounce(function($el){
 	})
 }, 500, false);
 
+(function() {
+	var $btn = $('<a class="button-link" href="#"><span class="icon-sm icon-copy"></span></a>');
+	var $btnText = $('<span>Copy Link</span>');
+	$btn.append($btnText).click(function(e) {
+		e.preventDefault();
+		var input = document.createElement('input');
+	  input.value = decodeURI(location.href);
+	  document.body.appendChild(input)
+	  input.select();
+	  document.execCommand('copy')
+	  document.body.removeChild(input);
+	  $btnText.text('Copy Success');
+	  setTimeout(function() {
+		  $btnText.text('Copy Link');
+	  }, 2000)
+	});
+
+	var jsTabParentObserver = new CrossBrowser.MutationObserver(function(mutations) {
+		var $copyBtn = $('.js-copy-card');
+		if (!$copyBtn[0]) { return ; }
+		$copyBtn.after($btn);
+	})
+
+	jsTabParentObserver.observe($('.js-tab-parent')[0], { childList: true });
+})()
+
 var recalcTotalsObserver = new CrossBrowser.MutationObserver(function(mutations)
 {
 	// Determine if the mutation event included an ACTUAL change to the list rather than
